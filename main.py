@@ -39,6 +39,7 @@ if __name__ == "__main__":
             first_author = paper_info.get("paper_first_author", "")
             paper_url = paper_info.get("paper_url", "")
             paper_abs = paper_info.get("paper_abstract", "")
+            github_url = paper_info.get("github_url", "")
 
             DB_file_name = os.path.join("already_sent", "papers.txt")
             append_write = "w" if not os.path.exists(DB_file_name) else "a"  # make a new file if not
@@ -60,6 +61,15 @@ if __name__ == "__main__":
                 "title_link": f"{paper_url}",
                 "footer": f"{first_author} | {update_time} | {topic}",
             }
+            if github_url:
+                github_button = {"actions": [
+                    {
+                        "text": ":octocat: Github Repository",
+                        "type": "button",
+                        "url": f"{github_url}"
+                    }]
+                }
+                slack_text.update(github_button)
 
             summarised_text = translator.summarize(paper_abs)
 
@@ -72,7 +82,6 @@ if __name__ == "__main__":
 
             slack_status_code = slack.alarm_msg(slack_text)
             status_check.append(slack_status_code)
-
             # 슬랙으로 보낸 걸 확인하면 파일에 기록
             if slack_status_code == 200:
                 with open(DB_file_name, append_write) as f:
