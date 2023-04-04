@@ -1,0 +1,50 @@
+# TODO: add papers by configuration file
+base_url: "https://arxiv.paperswithcode.com/api/v0/papers/"
+user_name: "Eunbin Park"
+repo_name: "nlp-arxiv-daily"
+show_authors: True
+show_links: True
+show_badge: False
+max_results: 20
+
+update_paper_links: false
+
+# keywords to search
+keywords:
+  "NLP":
+    filters: ["NLP", "Natural Language Processing"]
+#  "Sequence Annotation":
+#    filters: ["Sequence Annotation", "Sequence Marking"]
+  "Named Entity Recognition":
+    filters: ["Named Entity Recognition", "NER"]
+  "Text Classification":
+    filters:
+      [
+        "Text Classification",
+        "Topic Labeling",
+        "News Classification",
+        "Natural Language Inference",
+        "Relation Classification",
+      ]
+#        "Dialog Act Classification",
+#        "Event Prediction",
+  "Sentiment Analysis":
+    filters: ["Sentiment Analysis"]
+  "Question Answering":
+    filters: ["QA", "Question Answering"]
+#  "Information Extraction":
+#    filters:
+#      [
+#        "Information Extraction",
+#        "Automatic Summary",
+#        "Title Generation",
+#        "Event Extraction",
+#      ]
+#  "Recommendation System":
+#    filters: ["Recommendation System", "Semantic Matching", "Chatbots"]
+#  "Knowledge Graph":
+#    filters: ["Knowledge Graph", "Knowledge Graphs"]
+#  "GNN":
+#    filters: ["GNN", "Graph Neural Network"]
+  "LLM":
+    filters: ["LLM", "LLMs", "Large Language Model", "Large-scale Language Model"]
