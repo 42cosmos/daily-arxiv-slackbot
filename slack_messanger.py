@@ -41,7 +41,6 @@ class SlackMessenger:
         :param slack_attachment_text:
         you must follow this rule
         https://api.slack.com/messaging/composing/layouts#building-attachments
-
         :return: status code
         """
         slack_text = self._make_alarm_format(slack_attachment_text)
@@ -60,6 +59,11 @@ class SlackMessenger:
         :param colour: Hex colour code ex, #000000
         :return:
         """
+        # TODO: Attachment is legacy, Change to Block Builder
+        # https://app.slack.com/block-kit-builder/
+
+        # attachment fields descibed here
+        # https://api.slack.com/reference/messaging/attachments#legacy_fields
         result = {"attachments": [attachment_dict]}
 
 
