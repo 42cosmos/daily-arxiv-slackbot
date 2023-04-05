@@ -62,10 +62,9 @@ class SlackMessenger:
         # TODO: Attachment is legacy, Change to Block Builder
         # https://app.slack.com/block-kit-builder/
 
-        # attachment fields descibed here
+        # attachment fields described here
         # https://api.slack.com/reference/messaging/attachments#legacy_fields
         result = {"attachments": [attachment_dict]}
-
 
         return json.dumps(result)
 
