@@ -9,7 +9,7 @@ from daily_arxiv import get_daily_papers, load_config
 logging.basicConfig(format="[%(asctime)s %(levelname)s] %(message)s", datefmt="%m/%d/%Y %H:%M:%S", level=logging.INFO)
 
 if __name__ == "__main__":
-    today = datetime.datetime.today().strftime("%Y-%m-%d")
+    today, hour = datetime.datetime.today().strftime("%Y-%m-%d %H").split()
 
     slack = SlackMessenger(test=True)
     translator = OpenAIGpt()
@@ -88,6 +88,6 @@ if __name__ == "__main__":
                     f.write(f"\n{paper_number}")
 
     if status_check:
-        slack.send_msg(f"{today} is Done ! Enjoy with your papers :arxiv:")
+        slack.send_msg(f"{today}'s {hour}h is Done ! Enjoy with your papers :arxiv:")
     else:
-        slack.send_msg(f"Nothing to share {today} :arxiv:")
+        slack.send_msg(f"Nothing to share {today}'s {hour}h :arxiv:")
