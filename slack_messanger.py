@@ -8,15 +8,15 @@ import requests
 def load_secret(name, key_path=None):
     if not key_path:
         key_path = os.getcwd()
-    with open(os.path.join(key_path, "secret.json"), "r") as f:
+    with open(key_path, "r") as f:
         secret = json.load(f)[name]
     return secret
 
 
 class SlackMessenger:
-    def __init__(self, test=False):
+    def __init__(self, test=False, key_path=None):
         name = "TEST_SLACK" if test else "SLACK"
-        secret = load_secret(name)
+        secret = load_secret(name, key_path=key_path)
         self._channel = secret["CHANNEL"]
         self._token = secret["ACCESSED_TOKEN"]
         self._web_hook_url = secret["WEB_HOOK_URL"]
