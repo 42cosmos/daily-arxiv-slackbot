@@ -13,11 +13,15 @@ from dotenv import load_dotenv
 if __name__ == "__main__":
     load_dotenv()
     today, hour = datetime.datetime.today().strftime("%Y-%m-%d %H").split()
+
     base_dir = os.getenv("WORKSPACE")
-    log_config_path = os.path.exists(os.getenv("LOGGING_CONFIG_PATH"))
-    if log_config_path:
+    log_config_file = os.path.join(base_dir, os.getenv("LOGGING_CONFIG_FILE"))
+    paper_config_file = os.path.join(base_dir, os.getenv("CONFIG_FILE"))
+    slack_token_file = os.path.join(base_dir, os.getenv("KEY_FILE"))
+
+    if os.path.exists(log_config_file):
         os.makedirs("log", exist_ok=True)
-        with open(os.getenv("LOGGING_CONFIG_PATH"), 'rt') as f:
+        with open(log_config_file, 'rt') as f:
             config = json.load(f)
             config["handlers"]["file"].update({"filename": os.path.join(base_dir, "log", f"{today}.log")})
 
@@ -27,10 +31,11 @@ if __name__ == "__main__":
                             level=logging.INFO)
 
     slack = SlackMessenger(test=False,
-                           key_path=os.getenv("KEY_PATH"))
+                           key_path=slack_token_file)
     translator = OpenAIGpt()
 
-    config = load_config(os.getenv("CONFIG_FILE_PATH"))
+    config = load_config(paper_config_file)
+
     work_dir = os.path.join(base_dir, "already_sent")
     os.makedirs(work_dir, exist_ok=True)
 
