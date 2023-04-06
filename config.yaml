@@ -5,7 +5,7 @@ repo_name: "nlp-arxiv-daily"
 show_authors: True
 show_links: True
 show_badge: False
-max_results: 20
+max_results: 10
 
 update_paper_links: false
 
