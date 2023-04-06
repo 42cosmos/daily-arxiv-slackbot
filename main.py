@@ -1,6 +1,8 @@
 import os
+import json
 import datetime
 import logging
+import logging.config
 
 from openai_chatgpt import OpenAIGpt
 from slack_messanger import SlackMessenger
@@ -8,13 +10,19 @@ from daily_arxiv import get_daily_papers, load_config
 
 from dotenv import load_dotenv
 
-logging.basicConfig(format="[%(asctime)s %(levelname)s] %(message)s", datefmt="%m/%d/%Y %H:%M:%S", level=logging.INFO)
-
 if __name__ == "__main__":
     load_dotenv()
     today, hour = datetime.datetime.today().strftime("%Y-%m-%d %H").split()
 
-    slack = SlackMessenger(test=False,
+    os.makedirs("log", exist_ok=True)
+
+    with open('logging_config.json', 'rt') as f:
+        config = json.load(f)
+        config["handlers"]["file"].update({"filename": f"log/{today}.log"})
+
+        logging.config.dictConfig(config)
+
+    slack = SlackMessenger(test=True,
                            key_path=os.getenv("KEY_PATH"))
     translator = OpenAIGpt()
 
@@ -45,6 +53,7 @@ if __name__ == "__main__":
             paper_abs = paper_info.get("paper_abstract", "")
             github_url = paper_info.get("github_url", "")
 
+            os.makedirs("already_sent", exist_ok=True)
             DB_file_name = os.path.join("already_sent", "papers.txt")
             append_write = "w" if not os.path.exists(DB_file_name) else "a"  # make a new file if not
 

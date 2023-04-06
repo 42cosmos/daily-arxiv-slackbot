@@ -1,42 +1,46 @@
 import os
-import openai
+import json
 import argparse
+import datetime
+
+import logging
+import logging.config
 from dotenv import load_dotenv
+
+import openai
+
+logger = logging.getLogger("openai").setLevel(logging.INFO)
 
 
 class OpenAIGpt:
     def __init__(self):
         load_dotenv()
-        _api_key = os.getenv("OPENAI_API_KEY")
-        assert _api_key is not None, "Please set OPENAI_API_KEY in .env file"
-        openai.api_key = os.getenv("OPENAI_API_KEY", "")
+        self._api_key = os.getenv("OPENAI_API_KEY")
+        assert self._api_key is not None, "Please set OPENAI_API_KEY in .env file"
+        openai.api_key = self._api_key
 
-    @staticmethod
-    def translate(text):
+    def request(self, request_data: list, model="gpt-3.5-turbo"):
+        request_data = [{"role": role, "content": content} for role, content in request_data]
         completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant that translates English to Korean."},
-                {"role": "user", "content": f'Translate the following English text to Korean: "{text}"'}
-            ]
+            model=model,
+            messages=request_data,
         )
+
         try:
             return completion['choices'][0]['message']['content']
-        except:
+
+        except Exception as e:
+            logger.exception(f"Error: {e}")
             return False
 
-    @staticmethod
-    def summarize(text):
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system",
-                 "content": "You are a helpful research paper assistant that makes awesome summarised text."},
-                {"role": "user",
-                 "content": f'Please summarize the following text into 3 sentences and extract only the essentials what paper authors do: "{text}"'}
-            ]
-        )
-        try:
-            return completion['choices'][0]['message']['content']
-        except:
-            return False
+    def translate(self, text):
+        prompt = f'Translate the following English text to Korean: {text}'
+        request_data = [("system", "You are a helpful assistant that translates English to Korean."), ("user", text)]
+        return self.request(request_data=request_data)
+
+    def summarize(self, text):
+        prompt = f'Please summarize the following text into 3 sentences and extract only the essentials what paper ' \
+                 f'authors do: {text} '
+        request_data = [("system", "You are a helpful research paper assistant that makes awesome summarised text."),
+                        ("user", prompt)]
+        return self.request(request_data=request_data)
