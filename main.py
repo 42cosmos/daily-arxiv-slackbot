@@ -13,20 +13,29 @@ from dotenv import load_dotenv
 if __name__ == "__main__":
     load_dotenv()
     today, hour = datetime.datetime.today().strftime("%Y-%m-%d %H").split()
+    base_dir = os.getenv("WORKSPACE")
+    log_config_path = os.path.exists(os.getenv("LOGGING_CONFIG_PATH"))
+    if log_config_path:
+        os.makedirs("log", exist_ok=True)
+        with open(os.getenv("LOGGING_CONFIG_PATH"), 'rt') as f:
+            config = json.load(f)
+            config["handlers"]["file"].update({"filename": os.path.join(base_dir, "log", f"{today}.log")})
 
-    os.makedirs("log", exist_ok=True)
+            logging.config.dictConfig(config)
+    else:
+        logging.basicConfig(format="[%(asctime)s %(levelname)s] %(message)s", datefmt="%m/%d/%Y %H:%M:%S",
+                            level=logging.INFO)
 
-    with open('logging_config.json', 'rt') as f:
-        config = json.load(f)
-        config["handlers"]["file"].update({"filename": f"log/{today}.log"})
-
-        logging.config.dictConfig(config)
-
-    slack = SlackMessenger(test=True,
+    slack = SlackMessenger(test=False,
                            key_path=os.getenv("KEY_PATH"))
     translator = OpenAIGpt()
 
-    config = load_config("config.yaml")
+    config = load_config(os.getenv("CONFIG_FILE_PATH"))
+    work_dir = os.path.join(base_dir, "already_sent")
+    os.makedirs(work_dir, exist_ok=True)
+
+    DB_file_name = os.path.join(work_dir, "papers.txt")
+    append_write = "w" if not os.path.exists(DB_file_name) else "a"
 
     status_check = []
     data_collector = {}
@@ -52,10 +61,6 @@ if __name__ == "__main__":
             paper_url = paper_info.get("paper_url", "")
             paper_abs = paper_info.get("paper_abstract", "")
             github_url = paper_info.get("github_url", "")
-
-            os.makedirs("already_sent", exist_ok=True)
-            DB_file_name = os.path.join("already_sent", "papers.txt")
-            append_write = "w" if not os.path.exists(DB_file_name) else "a"  # make a new file if not
 
             # 작성용 파일이 이미 있는 경우
             if append_write == "a":
