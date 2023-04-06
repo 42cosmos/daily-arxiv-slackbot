@@ -6,12 +6,16 @@ from openai_chatgpt import OpenAIGpt
 from slack_messanger import SlackMessenger
 from daily_arxiv import get_daily_papers, load_config
 
+from dotenv import load_dotenv
+
 logging.basicConfig(format="[%(asctime)s %(levelname)s] %(message)s", datefmt="%m/%d/%Y %H:%M:%S", level=logging.INFO)
 
 if __name__ == "__main__":
+    load_dotenv()
     today, hour = datetime.datetime.today().strftime("%Y-%m-%d %H").split()
 
-    slack = SlackMessenger(test=True)
+    slack = SlackMessenger(test=False,
+                           key_path=os.getenv("KEY_PATH"))
     translator = OpenAIGpt()
 
     config = load_config("config.yaml")
