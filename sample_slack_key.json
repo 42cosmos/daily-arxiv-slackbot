@@ -1,0 +1,12 @@
+{
+  "SLACK": {
+    "WEB_HOOK_URL": "web_hook_url",
+    "CHANNEL": "your_channel",
+    "ACCESSED_TOKEN": "xoxb-accesse_token"
+  },
+  "TEST_SLACK": {
+    "WEB_HOOK_URL": "web_hook_url",
+    "CHANNEL": "your_test_channel",
+    "ACCESSED_TOKEN": "xoxb-accesse_token"
+  }
+}
