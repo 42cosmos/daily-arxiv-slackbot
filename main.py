@@ -1,4 +1,4 @@
-import os
+mport os
 import json
 import datetime
 import logging
@@ -51,7 +51,7 @@ if __name__ == "__main__":
         max_results = 20 if topic == "LLM" else config["max_results"]
 
         logging.info(f"topic = {topic} keyword = {keyword}")
-        data = get_daily_papers(topic, query=keyword, max_results=2)
+        data = get_daily_papers(topic, query=keyword, max_results=max_results)
         data_collector.update(data)
         print("\n")
 
