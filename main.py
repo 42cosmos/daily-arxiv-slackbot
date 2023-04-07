@@ -51,7 +51,7 @@ if __name__ == "__main__":
         max_results = 20 if topic == "LLM" else config["max_results"]
 
         logging.info(f"topic = {topic} keyword = {keyword}")
-        data = get_daily_papers(topic, query=keyword, max_results=max_results)
+        data = get_daily_papers(topic, query=keyword, max_results=2)
         data_collector.update(data)
         print("\n")
 
@@ -93,15 +93,16 @@ if __name__ == "__main__":
                     }]
                 }
                 slack_text.update(github_button)
-
             summarised_text = translator.summarize(paper_abs)
 
             translated_to_ko = False
             if summarised_text:
+                slack_text.update({"text": summarised_text})
                 translated_to_ko = translator.translate(summarised_text)
 
-            if translated_to_ko:
-                slack_text.update({"text": translated_to_ko})
+                if translated_to_ko:
+                    print(translated_to_ko)
+                    slack_text.update({"text": translated_to_ko})
 
             slack_status_code = slack.alarm_msg(slack_text)
             status_check.append(slack_status_code)
