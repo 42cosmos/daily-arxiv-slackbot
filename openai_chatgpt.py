@@ -19,7 +19,7 @@ class OpenAIGpt:
         assert self._api_key is not None, "Please set OPENAI_API_KEY in .env file"
         openai.api_key = self._api_key
 
-    def request(self, request_data: list, model="gpt-3.5-turbo"):
+    def request(self, request_data: list, model):
         request_data = [{"role": role, "content": content} for role, content in request_data]
         completion = openai.ChatCompletion.create(
             model=model,
@@ -35,14 +35,14 @@ class OpenAIGpt:
             logger.exception(f"API Error: 502 Bad Gateway")
             return False
 
-    def translate(self, text):
+    def translate(self, text, model="gpt-3.5-turbo"):
         prompt = f'Translate the following English text to Korean: {text}'
         request_data = [("system", "You are a helpful assistant that translates English to Korean."), ("user", prompt)]
-        return self.request(request_data=request_data)
+        return self.request(request_data=request_data, model=model)
 
-    def summarize(self, text):
+    def summarize(self, text, model="gpt-3.5-turbo"):
         prompt = f'Please summarize the following text into 3 sentences and extract only the essentials what paper ' \
                  f'authors do: {text} '
         request_data = [("system", "You are a helpful research paper assistant that makes awesome summarised text."),
                         ("user", prompt)]
-        return self.request(request_data=request_data)
+        return self.request(request_data=request_data, model=model)
