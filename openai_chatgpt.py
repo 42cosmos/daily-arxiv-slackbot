@@ -32,7 +32,7 @@ class OpenAIGpt:
             logger.exception(f"Error: {e}")
             return False
         except openai.error.APIError as e:
-            logger.exception(f"Error: API Erro }")
+            logger.exception(f"API Error: 502 Bad Gateway")
             return False
 
     def translate(self, text):
