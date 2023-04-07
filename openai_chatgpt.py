@@ -25,12 +25,14 @@ class OpenAIGpt:
             model=model,
             messages=request_data,
         )
-
         try:
             return completion['choices'][0]['message']['content']
 
         except Exception as e:
             logger.exception(f"Error: {e}")
+            return False
+        except openai.error.APIError as e:
+            logger.exception(f"Error: API Erro }")
             return False
 
     def translate(self, text):
