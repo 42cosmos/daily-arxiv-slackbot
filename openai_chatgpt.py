@@ -37,7 +37,7 @@ class OpenAIGpt:
 
     def translate(self, text):
         prompt = f'Translate the following English text to Korean: {text}'
-        request_data = [("system", "You are a helpful assistant that translates English to Korean."), ("user", text)]
+        request_data = [("system", "You are a helpful assistant that translates English to Korean."), ("user", prompt)]
         return self.request(request_data=request_data)
 
     def summarize(self, text):
