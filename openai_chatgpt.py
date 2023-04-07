@@ -36,13 +36,13 @@ class OpenAIGpt:
             return False
 
     def translate(self, text, model="gpt-3.5-turbo"):
-        prompt = f'Translate the following English text to Korean: {text}'
-        request_data = [("system", "You are a helpful assistant that translates English to Korean."), ("user", prompt)]
+        prompt = f'Translate the following English text to Korean: "{text}"'
+        request_data = [("system", "You are a helpful assistant that translates English to Korean."),
+                        ("user", text)]
         return self.request(request_data=request_data, model=model)
 
     def summarize(self, text, model="gpt-3.5-turbo"):
-        prompt = f'Please summarize the following text into 3 sentences and extract only the essentials what paper ' \
-                 f'authors do: {text} '
+        prompt = f'Please summarize the following text into 3 sentences and extract only the essentials: {text}'
         request_data = [("system", "You are a helpful research paper assistant that makes awesome summarised text."),
                         ("user", prompt)]
         return self.request(request_data=request_data, model=model)
