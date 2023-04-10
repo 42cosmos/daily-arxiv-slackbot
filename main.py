@@ -3,12 +3,20 @@ import json
 import datetime
 import logging
 import logging.config
+import traceback
 
 from openai_chatgpt import OpenAIGpt
 from slack_messanger import SlackMessenger
 from daily_arxiv import get_daily_papers, load_config
 
 from dotenv import load_dotenv
+
+
+def handle_exception(exception, sleep_time=300):
+    logging.error(f"{exception.__class__.__name__}: {exception}")
+    traceback.print_exc()
+    time.sleep(sleep_time)
+
 
 if __name__ == "__main__":
     load_dotenv()
@@ -49,9 +57,19 @@ if __name__ == "__main__":
     logging.info("GET daily papers begin")
     for topic, keyword in keywords.items():
         max_results = 20 if topic == "LLM" else config["max_results"]
-
         logging.info(f"topic = {topic} keyword = {keyword}")
-        data = get_daily_papers(topic, query=keyword, max_results=max_results)
+
+        data = None
+        while data is None:
+            try:
+                data = get_daily_papers(topic, query=keyword, max_results=max_results)
+
+            except AttributeError as attr_err:
+                handle_exception(attr_err)
+
+            except KeyError as key_err:
+                handle_exception(key_err)
+
         data_collector.update(data)
         print("\n")
 
