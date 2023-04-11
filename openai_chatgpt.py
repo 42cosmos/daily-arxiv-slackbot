@@ -28,11 +28,12 @@ class OpenAIGpt:
         try:
             return completion['choices'][0]['message']['content']
 
+        except openai.error.APIError as e:
+            logger.exception(f"API Error: {e}")
+            return False
+
         except Exception as e:
             logger.exception(f"Error: {e}")
-            return False
-        except openai.error.APIError as e:
-            logger.exception(f"API Error: 502 Bad Gateway")
             return False
 
     def translate(self, text, model="gpt-3.5-turbo"):
