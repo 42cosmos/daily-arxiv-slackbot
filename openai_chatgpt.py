@@ -33,6 +33,10 @@ class OpenAIGpt:
             logger.exception(f"Status Code: {e.status_code}, Response: {e.response.json()}")
             return False
 
+        except openai.error.RateLimitError as e:
+            logger.exception(f"Rate Limit Error: {e}")
+            return "Rate Limit Error"
+
         except Exception as e:
             logger.exception(f"Error: {e}")
             return False

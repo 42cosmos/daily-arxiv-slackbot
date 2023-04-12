@@ -1,6 +1,7 @@
 import os
 import json
 import datetime
+
 import logging
 import logging.config
 import traceback
@@ -17,8 +18,7 @@ def handle_exception(exception, sleep_time=300):
     traceback.print_exc()
     time.sleep(sleep_time)
 
-
-if __name__ == "__main__":
+def main():
     load_dotenv()
     today, hour = datetime.datetime.today().strftime("%Y-%m-%d %H").split()
 
@@ -115,6 +115,10 @@ if __name__ == "__main__":
 
             translated_to_ko = False
             if summarised_text:
+                if summarised_text == "Rate Limit Error":
+                    slack.send_msg(f"Rate Limit Error. Please Check your API :arxiv:")
+                    return False
+
                 slack_text.update({"text": summarised_text})
                 translated_to_ko = translator.translate(summarised_text)
 
@@ -133,3 +137,7 @@ if __name__ == "__main__":
         slack.send_msg(f"{today}'s {hour}h is Done ! Enjoy with your papers :arxiv:")
     else:
         slack.send_msg(f"Nothing to share {today}'s {hour}h :arxiv:")
+
+
+if __name__ == "__main__":
+    main()
