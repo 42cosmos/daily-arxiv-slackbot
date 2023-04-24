@@ -47,7 +47,7 @@ class OpenAIGpt:
                         ("user", text)]
         return self.request(request_data=request_data, model=model)
 
-    def summarize(self, text, model="gpt-3.5-turbo"):
+    def summarise(self, text, model="gpt-3.5-turbo"):
         prompt = f'Please summarize the following text into 3 sentences and extract only the essentials: {text}'
         request_data = [("system", "You are a helpful research paper assistant that makes awesome summarised text."),
                         ("user", prompt)]
