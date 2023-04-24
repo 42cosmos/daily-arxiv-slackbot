@@ -31,7 +31,7 @@ class OpenAIGpt:
         except openai.error.APIError as e:
             logger.exception(f"API Error: {e}")
             logger.exception(f"Status Code: {e.status_code}, Response: {e.response.json()}")
-            return False
+            return "API Error"
 
         except openai.error.RateLimitError as e:
             logger.exception(f"Rate Limit Error: {e}")
