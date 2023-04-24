@@ -118,12 +118,12 @@ def main():
                 for _ in range(5):
                     summarised_text_result = translator.summarise(paper_abs)
                     if summarised_text_result == "Rate Limit Error":
-                        logger.info("Rate Limit Error in Summarisation. Wait one minute and then restart.")
+                        logging.info("Rate Limit Error in Summarisation. Wait one minute and then restart.")
                         slack.send_msg(f"Rate Limit Error in Summarisation. Wait one minute and then restart. :arxiv:")
                         time.sleep(60)
                         continue
                     elif summarised_text_result == "API Error":
-                        logger.info("API Error. Stopping the program.")
+                        logging.info("API Error. Stopping the program.")
                         slack.send_msg("API Error occurred. Stopping the program.")
                         raise SystemExit()
 
@@ -136,14 +136,14 @@ def main():
                     for _ in range(5):
                         translated_to_ko_result = translator.translate(summarised_text)
                         if translated_to_ko_result == "Rate Limit Error":
-                            logger.info("Rate Limit Error in Translation. Wait one minute and then restart.")
+                            logging.info("Rate Limit Error in Translation. Wait one minute and then restart.")
                             slack.send_msg(
                                 f"Rate Limit Error in Translation. Wait one minute and then restart. :arxiv:")
                             time.sleep(60)
                             continue
 
                         elif translated_to_ko_result == "API Error":
-                            logger.info("API Error. Stopping the program.")
+                            logging.info("API Error. Stopping the program.")
                             slack.send_msg("API Error occurred. Stopping the program.")
                             raise SystemExit()
 
@@ -152,16 +152,16 @@ def main():
                             break
 
                     if translated_to_ko:
-                        logger.info("Summarisation and Translation Success")
+                        logging.info("Summarisation and Translation Success")
                         slack_text.update({"text": translated_to_ko})
                     else:  # 번역 실패
-                        logger.info("Only Translation Success")
+                        logging.info("Only Translation Success")
                         slack_text.update({"text": summarised_text})
                 else:  # 요약 실패
-                    logger.info("All Failed")
+                    logging.info("All Failed")
                     slack_text.update({"text": paper_abs})
             else:
-                logger.info("No Abstract found.")
+                logging.info("No Abstract found.")
                 slack_text.update({"text": "No Abstract found."})
 
             slack_status_code = slack.alarm_msg(slack_text)
