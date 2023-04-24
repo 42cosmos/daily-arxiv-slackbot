@@ -111,20 +111,45 @@ def main():
                     }]
                 }
                 slack_text.update(github_button)
-            summarised_text = translator.summarize(paper_abs)
 
-            translated_to_ko = False
-            if summarised_text:
-                if summarised_text == "Rate Limit Error":
-                    slack.send_msg(f"Rate Limit Error. Please Check your API :arxiv:")
-                    return False
+            if paper_abs:
+                summarised_text = None
+                for _ in range(5):
+                    summarised_text_result = translator.summarise(paper_abs)
+                    if summarised_text_result == "Rate Limit Error":
+                        logger.info("Rate Limit Error in Summarisation. Wait one minute and then restart.")
+                        slack.send_msg(f"Rate Limit Error in Summarisation. Wait one minute and then restart. :arxiv:")
+                        time.sleep(60)
+                        continue
+                    else:
+                        summarised_text = summarised_text_result
+                        break
 
-                slack_text.update({"text": summarised_text})
-                translated_to_ko = translator.translate(summarised_text)
+                if summarised_text:
+                    translated_to_ko = None
+                    for _ in range(5):
+                        translated_to_ko_result = translator.translate(summarised_text)
+                        if translated_to_ko_result == "Rate Limit Error":
+                            logger.info("Rate Limit Error in Translation. Wait one minute and then restart.")
+                            slack.send_msg(f"Rate Limit Error in Translation. Wait one minute and then restart. :arxiv:")
+                            time.sleep(60)
+                            continue
+                        else:
+                            translated_to_ko = translated_to_ko_result
+                            break
 
-                if translated_to_ko:
-                    print(translated_to_ko)
-                    slack_text.update({"text": translated_to_ko})
+                    if translated_to_ko:
+                        logger.info("Summarisation and Translation Success")
+                        slack_text.update({"text": translated_to_ko})
+                    else:  # 번역 실패
+                        logger.info("Only Translation Success")
+                        slack_text.update({"text": summarised_text})
+                else:  # 요약 실패
+                    logger.info("All Failed")
+                    slack_text.update({"text": paper_abs})
+            else:
+                logger.info("No Abstract found.")
+                slack_text.update({"text": "No Abstract found."})
 
             slack_status_code = slack.alarm_msg(slack_text)
             status_check.append(slack_status_code)
