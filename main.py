@@ -18,6 +18,7 @@ def handle_exception(exception, sleep_time=300):
     traceback.print_exc()
     time.sleep(sleep_time)
 
+
 def main():
     load_dotenv()
     today, hour = datetime.datetime.today().strftime("%Y-%m-%d %H").split()
@@ -121,6 +122,11 @@ def main():
                         slack.send_msg(f"Rate Limit Error in Summarisation. Wait one minute and then restart. :arxiv:")
                         time.sleep(60)
                         continue
+                    elif summarised_text_result == "API Error":
+                        logger.info("API Error. Stopping the program.")
+                        slack.send_msg("API Error occurred. Stopping the program.")
+                        raise SystemExit()
+
                     else:
                         summarised_text = summarised_text_result
                         break
@@ -131,9 +137,16 @@ def main():
                         translated_to_ko_result = translator.translate(summarised_text)
                         if translated_to_ko_result == "Rate Limit Error":
                             logger.info("Rate Limit Error in Translation. Wait one minute and then restart.")
-                            slack.send_msg(f"Rate Limit Error in Translation. Wait one minute and then restart. :arxiv:")
+                            slack.send_msg(
+                                f"Rate Limit Error in Translation. Wait one minute and then restart. :arxiv:")
                             time.sleep(60)
                             continue
+
+                        elif translated_to_ko_result == "API Error":
+                            logger.info("API Error. Stopping the program.")
+                            slack.send_msg("API Error occurred. Stopping the program.")
+                            raise SystemExit()
+
                         else:
                             translated_to_ko = translated_to_ko_result
                             break
