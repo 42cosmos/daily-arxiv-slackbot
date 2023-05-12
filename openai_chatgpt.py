@@ -35,6 +35,7 @@ class OpenAIGpt:
 
         except openai.error.RateLimitError as e:
             logger.exception(f"Rate Limit Error: {e}")
+            time.sleep(60)
             return "Rate Limit Error"
 
         except Exception as e:
