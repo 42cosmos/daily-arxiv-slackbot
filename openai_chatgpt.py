@@ -29,17 +29,17 @@ class OpenAIGpt:
             return completion['choices'][0]['message']['content']
 
         except openai.error.APIError as e:
-            logger.exception(f"API Error: {e}")
-            # logger.exception(f"Status Code: {e.status_code}, Response: {e.response.json()}")
+            logger.error(f"API Error: {e}")
+            # logger.error(f"Status Code: {e.status_code}, Response: {e.response.json()}")
             return "API Error"
 
         except openai.error.RateLimitError as e:
-            logger.exception(f"Rate Limit Error: {e}")
+            logger.error(f"Rate Limit Error: {e}")
             time.sleep(60)
             return "Rate Limit Error"
 
         except Exception as e:
-            logger.exception(f"Error: {e}")
+            logger.error(f"Error: {e}")
             return False
 
     def translate(self, text, model="gpt-3.5-turbo"):
