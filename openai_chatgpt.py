@@ -21,21 +21,19 @@ class OpenAIGpt:
 
     def request(self, request_data: list, model):
         request_data = [{"role": role, "content": content} for role, content in request_data]
-        completion = openai.ChatCompletion.create(
-            model=model,
-            messages=request_data,
-        )
         try:
+            completion = openai.ChatCompletion.create(
+                model=model,
+                messages=request_data,
+            )
             return completion['choices'][0]['message']['content']
 
         except openai.error.APIError as e:
             logger.exception(f"API Error: {e}")
-            # logger.exception(f"Status Code: {e.status_code}, Response: {e.response.json()}")
             return "API Error"
 
         except openai.error.RateLimitError as e:
             logger.exception(f"Rate Limit Error: {e}")
-            time.sleep(60)
             return "Rate Limit Error"
 
         except Exception as e:
@@ -43,8 +41,8 @@ class OpenAIGpt:
             return False
 
     def translate(self, text, model="gpt-3.5-turbo"):
-        prompt = f'Translate the following English text to Korean: "{text}"'
-        request_data = [("system", "You are a helpful assistant that translates English to Korean."),
+        request_data = [("system",
+                         "You are a helpful assistant that translates English to Korean. Translate the following English text to Korean"),
                         ("user", text)]
         return self.request(request_data=request_data, model=model)
 
