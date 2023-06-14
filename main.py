@@ -122,6 +122,7 @@ def main():
                         slack.send_msg(f"Rate Limit Error in Summarisation. Wait one minute and then restart. :arxiv:")
                         time.sleep(60)
                         continue
+
                     elif summarised_text_result == "API Error":
                         logging.info("API Error. Stopping the program.")
                         slack.send_msg("API Error occurred. Stopping the program.")
@@ -129,7 +130,7 @@ def main():
 
                     else:
                         summarised_text = summarised_text_result
-                        break
+                        break   # break this loop because summarisation is successful
 
                 if summarised_text:
                     translated_to_ko = None
@@ -149,7 +150,7 @@ def main():
 
                         else:
                             translated_to_ko = translated_to_ko_result
-                            break
+                            break  # break this loop because translation is successful
 
                     if translated_to_ko:
                         logging.info("Summarisation and Translation Success")
